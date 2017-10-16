@@ -1,0 +1,8 @@
+eclipse.preferences.version=1
+encoding//src/mfo_clustered/Chromosome.java=UTF-8
+encoding//src/mfo_clustered/Crossover.java=UTF-8
+encoding//src/mfo_clustered/Evaluate.java=UTF-8
+encoding//src/mfo_clustered/GraphMethods.java=UTF-8
+encoding//src/mfo_clustered/InitializeChromosome.java=UTF-8
+encoding//src/mfo_clustered/MainClass.java=UTF-8
+encoding//src/mfo_clustered/Mutation.java=UTF-8
