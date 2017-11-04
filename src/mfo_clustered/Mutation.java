@@ -28,8 +28,9 @@ public class Mutation {
 		int num_Vertex_in_Cluster = vertex_In_Cluster[idx_Cluster].length;
 		weight_Cluster_Matrix = init_Chrome.createWeightMatrixForCluster(num_Vertex, num_Vertex_in_Cluster, par,
 				vertex_In_Cluster[idx_Cluster]);
-		spanning_Tree_of_Cluster = edgeMutation(weight_Cluster_Matrix, num_Vertex_in_Cluster, mutation_Rate, rnd);
-
+		spanning_Tree_of_Cluster = edgeMutation2(weight_Cluster_Matrix, num_Vertex_in_Cluster, mutation_Rate, rnd);
+		// spanning_Tree_of_Cluster = edgeMutation2(ReadWriteFile.weightMatrix,
+		// ReadWriteFile.numberOfCity, mutation_Rate, rnd);
 		// Chuyen ra cay khung cua do thi G
 		int[] cluster = new int[num_Vertex_in_Cluster];
 		for (int i = 0; i < num_Vertex_in_Cluster; i++) {
@@ -74,6 +75,54 @@ public class Mutation {
 			int del_idx_1 = rnd.nextInt(path.size() - 1);
 			// int del_idx_2 = rnd.Next(path.Count);
 			int del_idx_2 = del_idx_1 + 1;
+			child[path.get(del_idx_1)][path.get(del_idx_2)] = 0f;
+			child[path.get(del_idx_2)][path.get(del_idx_1)] = 0f;
+
+			child[path.get(del_idx_1)][path.get(del_idx_2)] = 0f;
+			child[path.get(del_idx_2)][path.get(del_idx_1)] = 0f;
+			// Dat canh moi
+			child[start_Vertex][end_Vertex] = 1f;
+			child[end_Vertex][start_Vertex] = 1f;
+		}
+		return child;
+	}
+
+	public double[][] edgeMutation2(double[][] par, int num_Vertex, double mutation_Rate, Random rnd) {
+		double[][] child = new double[num_Vertex][num_Vertex];
+		for (int i = 0; i < num_Vertex; i++) {
+			for (int j = 0; j < num_Vertex; j++) {
+				child[i][j] = par[i][j];
+			}
+		}
+		int start_Vertex, end_Vertex; // 2 dinh cua canh ngau nhien them vao
+		start_Vertex = rnd.nextInt(num_Vertex);
+		end_Vertex = rnd.nextInt(num_Vertex);
+		while ((start_Vertex == end_Vertex) || (child[start_Vertex][end_Vertex] > 0)) {
+			end_Vertex = rnd.nextInt(num_Vertex);
+			start_Vertex = rnd.nextInt(num_Vertex);
+		}
+
+		if (rnd.nextDouble() < mutation_Rate) {
+			// Tìm duong ti tu dinh start_Vertex -> end_Vertex
+			Boolean[] visited = new Boolean[num_Vertex];
+			int[] pre = new int[num_Vertex];
+			for (int i = 0; i < num_Vertex; i++) {
+				visited[i] = false;
+				pre[i] = -1;
+			}
+			// Tìm đường đi nối từ đỉnh start_Vertex --> end_Vertex
+			findCyclic(start_Vertex, end_Vertex, child, num_Vertex, visited, pre);
+			ArrayList<Integer> path = graph.printPath(start_Vertex, end_Vertex, pre);
+			// Xóa cạnh dài nhất trên đường đi.
+			double max = 0;
+			int del_idx_1 = 0, del_idx_2 = 1;
+			for (int i = 0; i < path.size() - 1; i++) {
+				if (ReadWriteFile.weightMatrix[path.get(i)][path.get(i + 1)] > max) {
+					del_idx_1 = i;
+					del_idx_2 = i + 1;
+					max = ReadWriteFile.weightMatrix[path.get(i)][path.get(i + 1)];
+				}
+			}
 			child[path.get(del_idx_1)][path.get(del_idx_2)] = 0f;
 			child[path.get(del_idx_2)][path.get(del_idx_1)] = 0f;
 			// Dat canh moi

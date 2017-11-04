@@ -144,8 +144,47 @@ public class InitializeChromosome {
 				}
 			}
 		}
-
+		// double[][] temp = new double[num_Vertex][num_Vertex];
+		// temp = localSearch(num_Cluster, weight_Matrix, vertex_In_Cluster,
+		// idx_Cluster, T);
+		// return temp;
 		return T;
 	}
 
+	public double[][] localSearch(int numCluster, double[][] weightMatrix, int[][] vertex_In_Cluster, int[] idx,
+			double[][] edMat) {
+		double temp[][] = new double[weightMatrix.length][weightMatrix.length];
+		for (int i = 0; i < weightMatrix.length; i++) {
+			for (int j = 0; j < weightMatrix.length; j++) {
+				temp[i][j] = edMat[i][j];
+			}
+		}
+		for (int i = 0; i < numCluster; i++) {
+			for (int j = i + 1; j < numCluster; j++) {
+				if (edMat[idx[i]][idx[j]] > 0) {
+					int[] arr = findMinDistance(weightMatrix, vertex_In_Cluster[i], vertex_In_Cluster[j]);
+					temp[idx[i]][idx[j]] = 0;
+					idx[i] = arr[0];
+					idx[j] = arr[1];
+					temp[idx[i]][idx[j]] = 1;
+				}
+			}
+		}
+		return temp;
+	}
+
+	public int[] findMinDistance(double[][] weightMatrix, int[] a1, int a2[]) {
+		int result[] = new int[2];
+		double min = weightMatrix[a1[0]][a2[0]];
+		for (int i = 0; i < a1.length; i++) {
+			for (int j = 0; j < a2.length; j++) {
+				if (weightMatrix[a1[i]][a2[j]] < min) {
+					min = weightMatrix[a1[i]][a2[j]];
+					result[0] = a1[i];
+					result[1] = a2[j];
+				}
+			}
+		}
+		return result;
+	}
 }

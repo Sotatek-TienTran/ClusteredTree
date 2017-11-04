@@ -55,13 +55,13 @@ public class DrawLines extends JComponent {
 			g.setColor(line.color);
 			//g.drawString
 			g.drawLine(line.x1, line.y1, line.x2, line.y2);
-			g.drawString(line.city1, line.x1, line.y1);
-			g.drawString(line.city2, line.x2, line.y2);
+			g.drawString(line.city1, line.x1+3, line.y1+3);
+			g.drawString(line.city2, line.x2+3, line.y2+3);
 			g.fillOval(line.x1-5, line.y1-5, 10 , 10);
 		}
 	}
 
-	public static void draw(int x1, int y1, int x2, int y2, String city1, String city2) {
+	public  void draw(int x1, int y1, int x2, int y2, String city1, String city2) {
 
 		testFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		final DrawLines comp = new DrawLines();

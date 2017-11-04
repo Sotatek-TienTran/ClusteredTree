@@ -12,7 +12,7 @@ public class MainClass {
 	Crossover cross = new Crossover();
 	Mutation mutation = new Mutation();
 	private static double crossOverRate = 0.9;
-	private static double mutationRate = 0.1;
+	private static double mutationRate = 0.9;
 	static Random rnd = new Random(1);
 	public int maxGroup;
 	public static int defaultPopLength = 100;
@@ -28,9 +28,9 @@ public class MainClass {
 		System.out.print(pop.get(0).getFactorialCost()[1] + " ");
 		sortByCostIndex(pop, 0);
 		System.out.println(pop.get(0).getFactorialCost()[0]);
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			ArrayList<Chromosome> tempPop = new ArrayList<Chromosome>();
-			while (tempPop.size() < 100) {
+			while (tempPop.size() < defaultPopLength) {
 				double r = 0 + (1 - 0) * rnd.nextDouble();
 				int par1 = rnd.nextInt(defaultPopLength);
 				int par2 = rnd.nextInt(defaultPopLength);
@@ -55,12 +55,14 @@ public class MainClass {
 			}
 			calculate(tempPop);
 			evaluatePopulation(tempPop);
+			//drawResult(tempPop.get(0).getEdgesMatrix());
 			ArrayList<Chromosome> newPop = new ArrayList<Chromosome>();
 			for (int j = 0; j < defaultPopLength / 2; j++) {
 				newPop.add(pop.get(j));
 				newPop.add(tempPop.get(j));
 			}
 			pop = newPop;
+			
 		}
 		calculate(pop);
 		evaluatePopulation(pop);
@@ -70,6 +72,10 @@ public class MainClass {
 		sortByCostIndex(pop, 0);
 		System.out.println(pop.get(0).getFactorialCost()[0]);
 		drawResult(pop.get(0).getEdgesMatrix());
+//		Crossover c = new Crossover();
+//		double temp[][] = new double[numOfCity][numOfCity];
+//		temp = c.ClusterBFSCrossover(pop.get(0).getEdgesMatrix(), pop.get(1).getEdgesMatrix(), numOfCity, vertexInCluster, rnd);
+//		printArray(temp);
 	}
 
 	public static void evaluatePopulation(ArrayList<Chromosome> pop) {
@@ -98,9 +104,11 @@ public class MainClass {
 	public static void drawResult(double[][] weightMatrix) {
 		City cities[] = ReadWriteFile.cities;
 		for (int i = 0; i < weightMatrix.length; i++) {
+			
 			for (int j = 0; j < weightMatrix[i].length; j++) {
 				if (weightMatrix[i][j] > 0) {
-					DrawLines.draw(cities[i].getX(), cities[i].getY(), cities[j].getX(), cities[j].getY(), i + 1 + "",
+					DrawLines d = new DrawLines();
+					d.draw(cities[i].getX(), cities[i].getY(), cities[j].getX(), cities[j].getY(), i + 1 + "",
 							j + 1 + "");
 				}
 			}
@@ -147,8 +155,8 @@ public class MainClass {
 		}
 		for (int i = 0; i < defaultPopLength; i++) {
 			double[] temp = new double[2];
-			temp[0] = mc.eva.clusteredTreeEvaluate(pop.get(i).getEdgesMatrix(), weightMatrix, numOfCity, startVertex);
-			temp[1] = mc.eva.clusteredTreeEvaluate(
+			temp[0] = mc.eva.evaluation(pop.get(i).getEdgesMatrix(), weightMatrix, numOfCity, startVertex);
+			temp[1] = mc.eva.evaluation(
 					mc.eva.decodingMFOVertexInSubGraph(pop.get(i).getEdgesMatrix(), maxGroupValue, maxGroupValue),
 					weightMatrix, maxGroupValue, rnd.nextInt(maxGroupValue));
 			pop.get(i).setFactorialCost(temp);
